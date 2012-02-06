@@ -713,6 +713,8 @@ table.el tables."
     (:select-tags	      nil	  org-export-select-tags)
     (:exclude-tags	      nil	  org-export-exclude-tags)
 
+    (:enable-labels           "labels"    org-export-latex-labels-enabled)
+
     (:latex-image-options     nil	  org-export-latex-image-default-option))
   "List of properties that represent export/publishing variables.
 Each element is a list of 3 items:

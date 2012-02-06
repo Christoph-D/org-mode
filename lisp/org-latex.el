@@ -76,6 +76,8 @@
 (defvar org-re-quote)  ; dynamically scoped from org.el
 (defvar org-commentsp) ; dynamically scoped from org.el
 
+(defvar org-export-latex-labels-enabled t)
+
 ;;; User variables:
 
 (defgroup org-export-latex nil
@@ -1311,7 +1313,7 @@ numbered sections and lower levels as unnumbered sections."
 	 (occur (number-to-string (cdr (assoc 'occur subcontent))))
 	 (content (cdr (assoc 'content subcontent)))
 	 (subcontent (cadr (assoc 'subcontent subcontent)))
-	 (label (org-get-text-property-any 0 'target heading))
+	 (label (and (plist-get org-export-latex-options-plist :enable-labels) (org-get-text-property-any 0 'target heading)))
 	 (label-list (cons label (cdr (assoc label
 					     org-export-target-aliases))))
 	 (sectioning org-export-latex-sectioning)
@@ -1323,7 +1325,7 @@ numbered sections and lower levels as unnumbered sections."
 	(setq heading (car sectioning)
 	      sectioning (cdr sectioning)
 	      ;; target property migh have changed...
-	      label (org-get-text-property-any 0 'target heading)
+	      label (and (plist-get org-export-latex-options-plist :enable-labels) (org-get-text-property-any 0 'target heading))
 	      label-list (cons label (cdr (assoc label
 						 org-export-target-aliases)))))
       (if sectioning (setq sectioning (make-list 10 sectioning)))
