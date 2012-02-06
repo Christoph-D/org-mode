@@ -272,6 +272,9 @@ in org-export-latex-classes."
 	(org-beamer-open-columns-maybe columns-option)
 	(org-beamer-open-column tmp column-option)))
     (cond
+     ((string-match "^\s-*\\\\againframe" text)
+      (remove-text-properties 0 (length text) '(target nil) text)
+      (cons text (list text "" "" "")))
      ((or (equal (cdr (assoc "BEAMER_env" props)) "frame")
 	  (and frame-level (= level frame-level)))
       ;; A frame
