@@ -276,7 +276,10 @@ in org-export-latex-classes."
       (remove-text-properties 0 (length text) '(target nil) text)
       (cons text (list text "" "" "")))
      ((or (equal (cdr (assoc "BEAMER_env" props)) "frame")
-	  (and frame-level (= level frame-level)))
+	  (and frame-level
+	       (= level frame-level)
+	       (or (equal (cdr (assoc "BEAMER_env" props)) "frame")
+		   (not (assoc "BEAMER_env" props)))))
       ;; A frame
       (org-beamer-get-special props)
 
