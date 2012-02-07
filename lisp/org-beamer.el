@@ -310,7 +310,7 @@ in org-export-latex-classes."
 	  (remove-text-properties 0 (length text) '(target nil) text))
       (org-beamer-get-special props)
       (setq text (org-trim text))
-      (setq have-text (string-match "\\S-" text))
+      (setq have-text (string-match "^[^!]" text))
       (setq in (org-fill-template
 		(nth 2 ass)
 		(list (cons "a" (or org-beamer-action ""))
