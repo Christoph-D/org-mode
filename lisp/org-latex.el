@@ -315,6 +315,12 @@ only one, the %s will be filled with the link."
   :version "24.1"
   :type 'string)
 
+(defcustom org-export-latex-cite-format "\\cite{%s}"
+  "A printf format string to be applied to citations.
+The format must contain one %s instance."
+  :group 'org-export-latex
+  :type 'string)
+
 (defcustom org-export-latex-hyperref-format "\\hyperref[%s]{%s}"
   "A printf format string to be applied to hyperref links.
 The format must contain one or two %s instances.  The first one
@@ -1064,7 +1070,10 @@ when PUB-DIR is set, use this as the publishing directory."
 	   (org-export-latex-parse-global level odd)))))
 
     ;; finalization
-    (unless body-only (insert "\n\\end{document}"))
+    (unless body-only (insert
+      (if (and org-export-latex-needs-bibliography reftex-default-bibliography)
+	  (format "\n\\bibliographystyle{plain}\n\\bibliography{%s}\n\\end{document}\n" (mapconcat 'file-truename reftex-default-bibliography ","))
+	  "\n\\end{document}\n")))
 
     ;; Attach description terms to the \item macro
     (goto-char (point-min))
@@ -1474,7 +1483,8 @@ LEVEL indicates the default depth for export."
 	    (let ((hl-levels
 		   (plist-get org-export-latex-options-plist :headline-levels))
 		  (sec-depth (length org-export-latex-sectioning)))
-	      (if (> hl-levels sec-depth) sec-depth hl-levels))))
+	      (if (> hl-levels sec-depth) sec-depth hl-levels)))
+	org-export-latex-needs-bibliography nil)
   (when (and org-export-latex-class-options
 	     (string-match "\\S-" org-export-latex-class-options)
 	     (string-match "^[ \t]*\\(\\\\documentclass\\)\\(\\[.*?\\]\\)?"
@@ -2330,6 +2340,10 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
 			      (org-remove-initial-hash
 			       (org-solidify-link-text raw-path))
 			      desc)))
+	     ((string= full-raw-path
+		       (format (cdr (assoc "pnotes" org-link-abbrev-alist)) desc))
+	      (setq org-export-latex-needs-bibliography t)
+	      (insert (format org-export-latex-cite-format desc)))
 	     (path
 	      (when (org-at-table-p)
 		;; There is a strange problem when we have a link in a table,
