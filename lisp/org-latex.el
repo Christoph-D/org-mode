@@ -943,6 +943,12 @@ when PUB-DIR is set, use this as the publishing directory."
 			 (file-name-sans-extension
 			  (file-name-nondirectory buffer-file-name)))
 		    "No Title"))
+	 ;; On subtree-export, if the subtree has a timestamp, use it
+	 ;; for \date.
+	 (date (and subtree-p
+		    (string-match "<\\([^>]*\\)>" title)
+		    (match-string 1 title)))
+	 (title (replace-regexp-in-string "<[^>]*>" "" title)) ; remove timestamps
 	 (filename
 	  (and (not to-buffer)
 	       (concat
@@ -971,7 +977,9 @@ when PUB-DIR is set, use this as the publishing directory."
 		      (t (get-buffer-create to-buffer)))
 		   (find-file-noselect filename)))
 	 (odd org-odd-levels-only)
-	 (header (org-export-latex-make-header title opt-plist))
+	 (header (progn
+		   (plist-put opt-plist :date date)
+		   (org-export-latex-make-header title opt-plist)))
 	 (skip (cond (subtree-p nil)
 		     (region-p nil)
 		     (t (plist-get opt-plist :skip-before-1st-heading))))
