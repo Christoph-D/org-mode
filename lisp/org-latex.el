@@ -2546,7 +2546,7 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
   ;; Preserve math snippets
   (let* ((matchers (plist-get org-format-latex-options :matchers))
 	 (re-list org-latex-regexps)
-	 beg end re e m n block off)
+	 beg end re e m n block off off-end)
     ;; Check the different regular expressions
     (while (setq e (pop re-list))
       (setq m (car e) re (nth 1 e) n (nth 2 e)
@@ -2555,7 +2555,9 @@ The conversion is made depending of STRING-BEFORE and STRING-AFTER."
       (when (and (member m matchers) (not (equal m "begin")))
 	(goto-char (point-min))
 	(while (re-search-forward re nil t)
-	  (setq beg (+ (match-beginning 0) off) end (- (match-end 0) 0))
+	  ; Don't protect a trailing character that is not $
+	  (setq off-end (if (and (member m '("$" "$1")) (not (char-equal (char-before) ?$))) 1 0))
+	  (setq beg (+ (match-beginning 0) off) end (- (match-end 0) off-end))
 	  (add-text-properties beg end '(org-protected t org-latex-math t))))))
 
   ;; Convert LaTeX to \LaTeX{} and TeX to \TeX{}
