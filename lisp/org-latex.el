@@ -1539,7 +1539,9 @@ OPT-PLIST is the options plist for current buffer."
      ;; insert the title
      (format
       "\n\n\\title{%s}\n"
-      (org-export-latex-fontify-headline title))
+      (org-export-latex-fontify-headline
+       ; remove links that would break \title
+       (replace-regexp-in-string "\\[\\[[^]]*\\]\\[\\([^]]*\\)\\]\\]" "\\1" title)))
      ;; insert author info
      (if (plist-get opt-plist :author-info)
 	 (format "\\author{%s%s}\n"
