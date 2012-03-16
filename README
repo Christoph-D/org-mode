@@ -1,3 +1,8 @@
+I will frequently rebase the branch "mystuff" to the upstream code, so
+the commit ids of my commits will not be stable.
+
+The original README follows.
+
 The is a distribution of Org, a plain text notes and project planning
 tool for Emacs.
 
